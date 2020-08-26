@@ -22,3 +22,12 @@ base_data <- tibble(
 ) %>%
   pivot_longer(cols = everything(), names_to = "presenter", values_to="presentation_date") %>%
   mutate_at("presenter", factor, levels = c("p1", "p2", "p3"), labels = c("Peter", "Günther", "Max"))
+
+# transform data for plotting -------------------
+grouped_data <- base_data %>%
+  group_by(presenter, presentation_month = floor_date(presentation_date, unit = "month")) %>%
+  summarise(n_presentations = n())
+
+# plot transformed data -------------------------
+ggplot(grouped_data, aes(x = presentation_month, y = presenter, fill = n_presentations)) +
+  geom_tile()
