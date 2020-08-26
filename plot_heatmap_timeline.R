@@ -29,5 +29,16 @@ grouped_data <- base_data %>%
   summarise(n_presentations = n())
 
 # plot transformed data -------------------------
-ggplot(grouped_data, aes(x = presentation_month, y = presenter, fill = n_presentations)) +
-  geom_tile()
+htplot <- ggplot(grouped_data, aes(x = presentation_month, y = presenter)) +
+  geom_tile(aes(fill = n_presentations)) +
+  scale_fill_gradient2(low = "green", high = "darkgreen",
+                       breaks = c(0:max(grouped_data$n_presentations)), guide = "legend") +
+  labs(title = "Wer hat wann vorgetragen?",
+       x = NULL,
+       y = NULL,
+       fill = "Anzahl Präsentationen\nin Monat") +
+  scale_x_date(date_breaks = "6 months", minor_breaks = "1 month", date_labels = "%b %y") +
+  theme_light() +
+  theme(legend.position = "bottom")
+
+ggsave("heatmap_timeline_plot.png", htplot, width = 5, height = 2)
